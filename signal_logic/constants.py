@@ -1,8 +1,8 @@
 # constants.py
 
 MIN_GREEN = 30
-MID_GREEN = 60
-MAX_GREEN = 100
+MID_GREEN = 45
+MAX_GREEN = 60
 
 YELLOW_TIME = 5
 
