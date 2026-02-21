@@ -1,5 +1,6 @@
 import time
-from detect import get_traffic_data
+from detection.detect import get_traffic_data
+from shared_data import traffic_data
 
 def start_realtime_detection():
 
@@ -8,8 +9,8 @@ def start_realtime_detection():
         density, ambulance = get_traffic_data()
 
         if density:
-            print("Live Lane Density:", density)
-            print("Ambulance:", ambulance)
+            traffic_data["density"] = density
+            traffic_data["ambulance"] = ambulance
             print("---------------------------")
 
         time.sleep(2)   # update every 2 seconds

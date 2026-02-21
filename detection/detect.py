@@ -7,7 +7,7 @@ model = YOLO("yolov8n.pt")
 
 vehicle_classes = [2, 3, 5, 7]
 
-video_path = "videos/traffic.mp4"
+video_path = "videos/4lane.mp4"
 cap = cv2.VideoCapture(video_path)
 
 def detect_lane_count(x_coords):
