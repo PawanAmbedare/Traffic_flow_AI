@@ -1,6 +1,6 @@
 # state_machine.py
 
-from constants import STATE_GREEN, STATE_YELLOW, STATE_RED
+from signal_logic.constants import STATE_GREEN, STATE_YELLOW, STATE_RED
 
 class SignalStateMachine:
 
