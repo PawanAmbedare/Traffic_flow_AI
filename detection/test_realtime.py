@@ -1,0 +1,3 @@
+from realtime import start_realtime_detection
+
+start_realtime_detection()
