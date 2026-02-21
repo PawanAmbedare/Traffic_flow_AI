@@ -1,15 +1,26 @@
 # timing_algorithm.py
 
-from constants import MIN_GREEN, MID_GREEN, MAX_GREEN
+from constants import MIN_GREEN, MAX_GREEN
 
-def get_green_time(vehicle_density):
+
+def get_green_time(occupied_area, total_road_area):
     """
-    Adaptive timing logic
+    Adaptive timing using road occupancy ratio.
     """
 
-    if vehicle_density < 0.5:
+    # prevent division error
+    if total_road_area <= 0:
         return MIN_GREEN
-    elif vehicle_density <= 0.75:
-        return MID_GREEN
-    else:
-        return MAX_GREEN
+
+    # density calculation
+    density = occupied_area / total_road_area
+
+    # keep density between 0 and 1
+    density = max(0.0, min(density, 1.0))
+
+    # scale timing
+    green_time = MIN_GREEN + (
+        density * (MAX_GREEN - MIN_GREEN)
+    )
+
+    return int(green_time)
