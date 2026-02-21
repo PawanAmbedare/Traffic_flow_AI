@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adaptive Traffic Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h1>🚦 Smart Traffic Control Dashboard</h1>
+
+<div class="grid">
+    <div class="card">North: <span id="north">0</span></div>
+    <div class="card">South: <span id="south">0</span></div>
+    <div class="card">East: <span id="east">0</span></div>
+    <div class="card">West: <span id="west">0</span></div>
+</div>
+
+<div class="signal" id="signalBox">Signal: RED</div>
+
+<div id="emergencyAlert" class="emergency hidden">
+    🚑 Emergency Vehicle Detected!
+</div>
+
+<canvas id="trafficChart"></canvas>
+
+<script src="/static/js/main.js"></script>
+
+</body>
+</html>
