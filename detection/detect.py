@@ -2,12 +2,13 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 from sklearn.cluster import KMeans
+from detection.emergency_detector import detect_emergency_vehicle
 
 model = YOLO("yolov8n.pt")
 
 vehicle_classes = [2, 3, 5, 7]
 
-video_path = "videos/4lane.mp4"
+video_path = "videos/traffic4.mp4"
 cap = cv2.VideoCapture(video_path)
 
 def detect_lane_count(x_coords):
@@ -34,7 +35,10 @@ def get_traffic_data():
     ret, frame = cap.read()
 
     if not ret:
-        return {}, False
+        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        return {}, []
+
+    display_frame = frame.copy()
 
     height, width, _ = frame.shape
 
@@ -42,26 +46,47 @@ def get_traffic_data():
 
     x_centers = []
     boxes_data = []
+    ambulance_positions = []
 
     for result in results:
         boxes = result.boxes
 
         for box in boxes:
             cls = int(box.cls[0])
-            if cls in vehicle_classes:
-                x1, y1, x2, y2 = map(int, box.xyxy[0])
-                center_x = (x1 + x2) // 2
+            x1, y1, x2, y2 = map(int, box.xyxy[0])
+            cx = (x1 + x2) // 2
+            cy = (y1 + y2) // 2
 
-                x_centers.append([center_x])
+            if cls in vehicle_classes:
+
+                x_centers.append([cx])
                 boxes_data.append((x1, y1, x2, y2))
 
+                cv2.rectangle(display_frame,(x1,y1),(x2,y2),(255,0,0),2)
+
+                vehicle_crop = frame[y1:y2, x1:x2]
+                if detect_emergency_vehicle(vehicle_crop):
+                    ambulance_positions.append((cx, cy))
+                    cv2.putText(display_frame,"EMERGENCY",
+                    (x1,y1-10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6,
+                    (0,0,255),
+                    2)
+
     if len(x_centers) == 0:
-        return {}, False
+        return {}, ambulance_positions
 
     lane_count = detect_lane_count(np.array(x_centers))
 
     lane_width = width // lane_count
     lane_area = lane_width * height
+
+    for i in range(1, lane_count):
+        cv2.line(display_frame,
+                 (i * lane_width, 0),
+                 (i * lane_width, height),
+                 (0,255,0), 2)
 
     lane_vehicle_area = {}
     lane_density = {}
@@ -80,4 +105,27 @@ def get_traffic_data():
         density = (lane_vehicle_area[f"lane{i+1}"] / lane_area) * 100
         lane_density[f"lane{i+1}"] = round(min(density, 100), 2)
 
-    return lane_density, False
+        cv2.putText(display_frame,
+                    f"L{i+1}: {lane_density[f'lane{i+1}']}%",
+                    (i * lane_width + 20, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.7,
+                    (0,255,255),
+                    2)
+
+    if len(ambulance_positions) > 0:
+        cv2.putText(display_frame,
+                    "EMERGENCY VEHICLE DETECTED",
+                    (50,100),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (0,0,255),
+                    3)
+
+    cv2.imshow("Real-Time AI Traffic Monitoring", display_frame)
+
+    if cv2.waitKey(1) & 0xFF == 27:
+        cap.release()
+        cv2.destroyAllWindows()
+
+    return lane_density, ambulance_positions

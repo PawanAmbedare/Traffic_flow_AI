@@ -1,7 +1,6 @@
 # timing_algorithm.py
 
-from constants import MIN_GREEN, MAX_GREEN
-
+from signal_logic.constants import MIN_GREEN, MAX_GREEN
 
 def get_green_time(occupied_area, total_road_area):
     """
