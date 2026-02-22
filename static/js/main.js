@@ -1,8 +1,7 @@
 var socket = io();
 
-const ctx = document.getElementById('trafficChart').getContext('2d');
-
-let trafficChart = new Chart(ctx, {
+let chartCtx = document.getElementById('trafficChart').getContext('2d');
+let trafficChart = new Chart(chartCtx, {
     type: 'line',
     data: {
         labels: [],
@@ -11,35 +10,45 @@ let trafficChart = new Chart(ctx, {
             data: [],
             borderWidth: 2
         }]
-    },
-    options: {
-        responsive: true
     }
 });
 
-socket.on("traffic_update", function(data) {
+socket.on("update", function(data) {
 
     document.getElementById("north").innerText = data.north;
     document.getElementById("south").innerText = data.south;
     document.getElementById("east").innerText = data.east;
     document.getElementById("west").innerText = data.west;
 
-    document.getElementById("signalBox").innerText = "Signal: " + data.signal;
+    document.getElementById("activeLane").innerText =
+        "Active Lane: " + data.active_lane.toUpperCase();
 
-    if (data.emergency) {
-        document.getElementById("emergencyAlert").classList.remove("hidden");
+    document.getElementById("timer").innerText = data.timer;
+
+    // Reset signals
+    ["north","south","east","west"].forEach(lane => {
+        document.getElementById(lane+"Signal").className = "signal red";
+    });
+
+    document.getElementById(data.active_lane+"Signal").className = "signal green";
+
+    // Emergency effect
+    if(data.emergency){
+        document.body.style.boxShadow = "0 0 40px red";
     } else {
-        document.getElementById("emergencyAlert").classList.add("hidden");
+        document.body.style.boxShadow = "none";
     }
 
-    // Update graph
+    // Logs
+    let logsDiv = document.getElementById("logs");
+    logsDiv.innerHTML = data.logs.map(l => "<div>"+l+"</div>").join("");
+
+    // Graph update
     trafficChart.data.labels.push("");
     trafficChart.data.datasets[0].data.push(data.north);
-
-    if (trafficChart.data.labels.length > 10) {
+    if (trafficChart.data.labels.length > 15){
         trafficChart.data.labels.shift();
         trafficChart.data.datasets[0].data.shift();
     }
-
     trafficChart.update();
 });

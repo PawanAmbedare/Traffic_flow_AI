@@ -1,31 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Adaptive Traffic Dashboard</title>
+    <title>Smart Traffic Command Center</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<h1>🚦 Smart Traffic Control Dashboard</h1>
-
-<div class="grid">
-    <div class="card">North: <span id="north">0</span></div>
-    <div class="card">South: <span id="south">0</span></div>
-    <div class="card">East: <span id="east">0</span></div>
-    <div class="card">West: <span id="west">0</span></div>
+<div class="topbar">
+    <h1>🚦 Smart Traffic Command Center</h1>
+    <div id="systemStatus">System: ACTIVE</div>
 </div>
 
-<div class="signal" id="signalBox">Signal: RED</div>
+<div class="main-container">
 
-<div id="emergencyAlert" class="emergency hidden">
-    🚑 Emergency Vehicle Detected!
+    <!-- Intersection -->
+    <div class="intersection">
+        <div class="road north">
+            <div class="signal" id="northSignal"></div>
+        </div>
+        <div class="road south">
+            <div class="signal" id="southSignal"></div>
+        </div>
+        <div class="road east">
+            <div class="signal" id="eastSignal"></div>
+        </div>
+        <div class="road west">
+            <div class="signal" id="westSignal"></div>
+        </div>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="sidepanel">
+
+        <div class="card">
+            <h3>Live Vehicle Count</h3>
+            <p>North: <span id="north"></span></p>
+            <p>South: <span id="south"></span></p>
+            <p>East: <span id="east"></span></p>
+            <p>West: <span id="west"></span></p>
+        </div>
+
+        <div class="card">
+            <h3>AI Decision</h3>
+            <p id="activeLane"></p>
+            <p>Timer: <span id="timer"></span>s</p>
+        </div>
+
+        <div class="card logs">
+            <h3>System Logs</h3>
+            <div id="logs"></div>
+        </div>
+
+    </div>
 </div>
 
 <canvas id="trafficChart"></canvas>
 
 <script src="/static/js/main.js"></script>
-
 </body>
 </html>

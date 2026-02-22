@@ -1,37 +1,67 @@
 body {
-    font-family: Arial;
     background: #0f172a;
     color: white;
-    text-align: center;
+    font-family: Arial;
+    margin: 0;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin: 20px;
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background: #1e293b;
+}
+
+.main-container {
+    display: flex;
+    padding: 20px;
+}
+
+.intersection {
+    width: 60%;
+    height: 400px;
+    position: relative;
+    background: #334155;
+    border-radius: 10px;
+}
+
+.road {
+    position: absolute;
+}
+
+.north { top: 10px; left: 50%; transform: translateX(-50%); }
+.south { bottom: 10px; left: 50%; transform: translateX(-50%); }
+.east { right: 10px; top: 50%; transform: translateY(-50%); }
+.west { left: 10px; top: 50%; transform: translateY(-50%); }
+
+.signal {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: gray;
+    transition: 0.5s;
+}
+
+.green { background: #22c55e; box-shadow: 0 0 20px #22c55e; }
+.red { background: #ef4444; box-shadow: 0 0 20px #ef4444; }
+
+.sidepanel {
+    width: 40%;
+    padding-left: 20px;
 }
 
 .card {
     background: #1e293b;
-    padding: 20px;
-    border-radius: 10px;
-    font-size: 20px;
-}
-
-.signal {
-    font-size: 30px;
-    margin: 20px;
-}
-
-.emergency {
-    background: red;
     padding: 15px;
-    font-size: 22px;
-    margin: 10px;
     border-radius: 10px;
+    margin-bottom: 15px;
 }
 
-.hidden {
-    display: none;
+.logs {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+canvas {
+    margin: 20px;
 }
